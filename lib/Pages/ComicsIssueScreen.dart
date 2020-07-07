@@ -113,10 +113,10 @@ class _ComicIssuesState extends State<ComicIssues> {
   }
 
   comicList() {
-    var data = _fetchData.comicIssue();
+    var data = _fetchData.comicIssue('/v1/public/comics', '');
     print(data);
     return FutureBuilder<List<ComicIssue>>(
-        future: _fetchData.comicIssue(),
+        future: _fetchData.comicIssue('/v1/public/comics', ''),
         builder: (context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData &&
               snapshot.connectionState == ConnectionState.done) {

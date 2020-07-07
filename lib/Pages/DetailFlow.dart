@@ -54,6 +54,7 @@ class _DetailFlowState extends State<DetailFlow> {
       body: SingleChildScrollView(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           CachedNetworkImage(
             imageUrl: '${widget.image}',
@@ -61,7 +62,7 @@ class _DetailFlowState extends State<DetailFlow> {
             height: 300.0,
             fit: BoxFit.cover,
           ),
-          Container(
+          Container(margin: EdgeInsets.only(left:16.0, right: 16.0),
             child: Text(
               '${widget.title}',
               style: GoogleFonts.lato(
@@ -72,12 +73,12 @@ class _DetailFlowState extends State<DetailFlow> {
           ),
           widget.description == null
               ? Container()
-              : Container(
+              : Container(margin: EdgeInsets.only(left:16.0, right: 16.0),
                   child: Text(
                     '${widget.description}',
                     style: GoogleFonts.lato(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w400,
                         color: Colors.white),
                   ),
                 ),
@@ -90,46 +91,51 @@ class _DetailFlowState extends State<DetailFlow> {
                       fontWeight: FontWeight.w500,
                       color: Colors.grey),
                 ),
-          Text(
-            '${widget.prices[0]['type']}\n ${widget.prices[0]['price']}',
-            style: GoogleFonts.lato(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w700,
-                color: Colors.white),
+          Container(margin: EdgeInsets.only(left:16.0, right: 16.0),
+            child: Text(
+              '${(widget.prices[0]['type']).toUpperCase()} : ${widget.prices[0]['price']}',
+              style: GoogleFonts.lato(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white),
+            ),
           ),
           images(widget.images),
-          Text(
-            'Creators',
-            textAlign: TextAlign.start,
-            style: GoogleFonts.lato(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w800,
-                color: Colors.white),
+          widget.characters.isEmpty
+              ? Container()
+              : Container(margin: EdgeInsets.only(left:16.0, right: 16.0),
+                child: Text(
+                    'Characters',
+                    style: GoogleFonts.lato(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white),
+                  ),
+              ),
+          widget.characters.isEmpty
+              ? Container()
+              : charactersList(widget.characters),
+          Container(margin: EdgeInsets.only(left:16.0, right: 16.0),
+            child: Text(
+              'Creators',
+              textAlign: TextAlign.start,
+              style: GoogleFonts.lato(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white),
+            ),
           ),
           creators(widget.creators),
-          widget.characters.isEmpty
-              ? Container()
-              : Text(
-                  'Characters',
-                  style: GoogleFonts.lato(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white),
-                ),
-          widget.characters.isEmpty
-              ? Container()
-              : charactersList(widget.characters)
+          
         ],
       )),
     );
   }
 
   images(final images) {
-    print(images.length);
-    print(images);
-    return Container(
+        return Container(
       margin: EdgeInsets.all(16.0),
-      height: 200,
+      height: 150,
       child: ListView.builder(
         physics: ClampingScrollPhysics(),
 
@@ -146,15 +152,14 @@ class _DetailFlowState extends State<DetailFlow> {
   imagesView(final _image, BuildContext context) {
     return CachedNetworkImage(
       imageUrl: '${_image['path']}' + '.' + '${_image['extension']}',
-      width: 80.0,
-      height: 80.0,
-      fit: BoxFit.cover,
+    
+      fit: BoxFit.fill,
     );
   }
 
   creators(final creators) {
     return Container(
-      height: 80.0,
+      height: 250.0,
       child: ListView.builder(
         physics: ClampingScrollPhysics(),
 
@@ -170,23 +175,28 @@ class _DetailFlowState extends State<DetailFlow> {
 
   creatorsView(final creators, BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(bottomRight: Radius.circular(16.0)),
+          color: Colors.white,
+        ),
       margin: EdgeInsets.all(8.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          thumbnailView(creators, context),
           Text(
             '${creators['name']}',
             style: GoogleFonts.lato(
                 fontSize: 18.0,
                 fontWeight: FontWeight.w500,
-                color: Colors.white),
+                color: Colors.black),
           ),
           Text(
             '(${creators['role']})',
             style: GoogleFonts.lato(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w500,
-                color: Colors.white),
+                color: Colors.black),
           ),
         ],
       ),
@@ -203,8 +213,7 @@ class _DetailFlowState extends State<DetailFlow> {
               snapshot.connectionState == ConnectionState.done) {
             var characterData = snapshot.data;
 
-            print('thumbnail: ${characterData[0]['thumbnail']['path']}');
-            return CachedNetworkImage(
+                       return CachedNetworkImage(
               imageUrl: '${characterData[0]['thumbnail']['path']}' +
                   '.' +
                   '${characterData[0]['thumbnail']['extension']}',
@@ -226,7 +235,7 @@ class _DetailFlowState extends State<DetailFlow> {
 
   charactersList(final characters) {
     return Container(
-      height: 200.0,
+      height: 220.0,
       child: ListView.builder(
         physics: ClampingScrollPhysics(),
         shrinkWrap: true,
@@ -250,7 +259,7 @@ class _DetailFlowState extends State<DetailFlow> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             thumbnailView(characters, context),
-            Container(
+            Container(padding: EdgeInsets.all(4.0),
               width: 140,
               child: Text(
                 '${characters['name']}',

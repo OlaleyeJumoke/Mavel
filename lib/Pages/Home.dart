@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mavel/CustomDesign/arcBanner.dart';
@@ -11,30 +13,28 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final heroImage = Image.network(
-    "https://terrigen-cdn-dev.marvel.com/content/prod/1x/008cmv_ons_mas_dsk_02.jpg",
-    fit: BoxFit.fitHeight,
+  final heroImage = CachedNetworkImage(imageUrl:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ9HF1IuElC4crtO9B634WjKXVdvQfaKqEH8A&usqp=CAU",
+    // "https://terrigen-cdn-dev.marvel.com/content/prod/1x/008cmv_ons_mas_dsk_02.jpg",
+    fit: BoxFit.fill,
     height: 300.0,
   );
-  final secondImage = Image.network(
+  final secondImage = CachedNetworkImage(imageUrl:
       "https://terrigen-cdn-dev.marvel.com/content/prod/1x/008cmv_ons_cut_dsk_03.jpg",
       fit: BoxFit.fill);
-      FetchData _fetchData;
+     
 
   @override
   void initState(){
 super.initState();
-_fetchData = FetchData();
-_fetchData.comicIssue();
   }
 
-  @override
-  void didChangeDependencies() {
-    precacheImage(heroImage.image, context);
-    precacheImage(secondImage.image, context);
+  // @override
+  // void didChangeDependencies() {
+  //   precacheImage(heroImage.CachedNetworkImage, context);
+  //   precacheImage(secondImage.image, context);
 
-    super.didChangeDependencies();
-  }
+  //   super.didChangeDependencies();
+  // }
 
   @override
   Widget build(BuildContext context) {
