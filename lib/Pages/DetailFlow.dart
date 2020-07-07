@@ -2,7 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mavel/Network/ApiLinks.dart';
-import 'package:mavel/Network/ApiModel.dart';
+import 'package:mavel/Models/ApiModel.dart';
+
 
 class DetailFlow extends StatefulWidget {
   final image,
@@ -50,19 +51,23 @@ class _DetailFlowState extends State<DetailFlow> {
   Widget build(BuildContext context) {
     print("Characters:${widget.characters}");
     return Scaffold(
+      appBar: AppBar(title: Text("Details")),
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          CachedNetworkImage(
-            imageUrl: '${widget.image}',
-            width: double.infinity,
-            height: 300.0,
-            fit: BoxFit.cover,
-          ),
-          Container(margin: EdgeInsets.only(left:16.0, right: 16.0),
+          widget.image == ''
+              ? Container()
+              : CachedNetworkImage(
+                  imageUrl: '${widget.image}',
+                  width: double.infinity,
+                  height: 300.0,
+                  fit: BoxFit.fill,
+                ),
+          Container(
+            margin: EdgeInsets.only(left: 16.0, right: 16.0),
             child: Text(
               '${widget.title}',
               style: GoogleFonts.lato(
@@ -73,7 +78,8 @@ class _DetailFlowState extends State<DetailFlow> {
           ),
           widget.description == null
               ? Container()
-              : Container(margin: EdgeInsets.only(left:16.0, right: 16.0),
+              : Container(
+                  margin: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: Text(
                     '${widget.description}',
                     style: GoogleFonts.lato(
@@ -91,7 +97,8 @@ class _DetailFlowState extends State<DetailFlow> {
                       fontWeight: FontWeight.w500,
                       color: Colors.grey),
                 ),
-          Container(margin: EdgeInsets.only(left:16.0, right: 16.0),
+          Container(
+            margin: EdgeInsets.only(left: 16.0, right: 16.0),
             child: Text(
               '${(widget.prices[0]['type']).toUpperCase()} : ${widget.prices[0]['price']}',
               style: GoogleFonts.lato(
@@ -100,40 +107,46 @@ class _DetailFlowState extends State<DetailFlow> {
                   color: Colors.white),
             ),
           ),
-          images(widget.images),
+          widget.images == '' ? Container() : images(widget.images),
           widget.characters.isEmpty
               ? Container()
-              : Container(margin: EdgeInsets.only(left:16.0, right: 16.0),
-                child: Text(
+              : Container(
+                  margin: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: Text(
                     'Characters',
                     style: GoogleFonts.lato(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w700,
                         color: Colors.white),
                   ),
-              ),
+                ),
           widget.characters.isEmpty
               ? Container()
               : charactersList(widget.characters),
-          Container(margin: EdgeInsets.only(left:16.0, right: 16.0),
-            child: Text(
-              'Creators',
-              textAlign: TextAlign.start,
-              style: GoogleFonts.lato(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white),
-            ),
-          ),
-          creators(widget.creators),
-          
+              Divider(height: 2.0,color: Colors.white,),
+          widget.creators.isEmpty
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: Text(
+                    'Creators',
+                    textAlign: TextAlign.start,
+                    style: GoogleFonts.lato(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white),
+                  ),
+                ),
+          widget.creators.isEmpty
+              ? Container()
+              :creators(widget.creators),
         ],
       )),
     );
   }
 
   images(final images) {
-        return Container(
+    return Container(
       margin: EdgeInsets.all(16.0),
       height: 150,
       child: ListView.builder(
@@ -152,14 +165,13 @@ class _DetailFlowState extends State<DetailFlow> {
   imagesView(final _image, BuildContext context) {
     return CachedNetworkImage(
       imageUrl: '${_image['path']}' + '.' + '${_image['extension']}',
-    
       fit: BoxFit.fill,
     );
   }
 
   creators(final creators) {
     return Container(
-      height: 250.0,
+      height: 230.0,
       child: ListView.builder(
         physics: ClampingScrollPhysics(),
 
@@ -176,27 +188,33 @@ class _DetailFlowState extends State<DetailFlow> {
   creatorsView(final creators, BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(bottomRight: Radius.circular(16.0)),
-          color: Colors.white,
-        ),
+        borderRadius: BorderRadius.only(bottomRight: Radius.circular(16.0)),
+        color: Colors.white,
+      ),
       margin: EdgeInsets.all(8.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           thumbnailView(creators, context),
-          Text(
-            '${creators['name']}',
-            style: GoogleFonts.lato(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w500,
-                color: Colors.black),
+          Container(
+            margin: EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+            child: Text(
+              '${creators['name']}',
+              style: GoogleFonts.lato(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black),
+            ),
           ),
-          Text(
-            '(${creators['role']})',
-            style: GoogleFonts.lato(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500,
-                color: Colors.black),
+          Container(
+            margin: EdgeInsets.all(8.0),
+            child: Text(
+              '(${creators['role']})',
+              style: GoogleFonts.lato(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black),
+            ),
           ),
         ],
       ),
@@ -213,11 +231,11 @@ class _DetailFlowState extends State<DetailFlow> {
               snapshot.connectionState == ConnectionState.done) {
             var characterData = snapshot.data;
 
-                       return CachedNetworkImage(
+            return CachedNetworkImage(
               imageUrl: '${characterData[0]['thumbnail']['path']}' +
                   '.' +
                   '${characterData[0]['thumbnail']['extension']}',
-              //width: 80.0,
+              width: 120.0,
               height: 150.0,
               fit: BoxFit.cover,
             );
@@ -259,7 +277,8 @@ class _DetailFlowState extends State<DetailFlow> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             thumbnailView(characters, context),
-            Container(padding: EdgeInsets.all(4.0),
+            Container(
+              padding: EdgeInsets.all(4.0),
               width: 140,
               child: Text(
                 '${characters['name']}',

@@ -1,5 +1,13 @@
 # mavel
 
+How to run the app:
+1. Clone the repository.
+2. Create a developer account here https://developer.marvel.com
+3. Generate api key on the website.
+4. Edit the Key.dart file, by adding your Public and Private Key.
+5. Run the app with your favourite IDE.
+
+
 A new Flutter project.
 
 ## Getting Started

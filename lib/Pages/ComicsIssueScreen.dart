@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mavel/Network/ApiLinks.dart';
-import 'package:mavel/Network/ApiModel.dart';
+import 'package:mavel/Models/ApiModel.dart';
 import 'package:mavel/Pages/DetailFlow.dart';
 
 class ComicIssues extends StatefulWidget {
@@ -15,7 +15,7 @@ class _ComicIssuesState extends State<ComicIssues> {
   String _searchText = "";
 
   Icon searchAction = new Icon(Icons.search);
-  Widget appBarTitle = new Text("Mavel");
+  Widget appBarTitle = new Text("Marvel");
 
   final TextEditingController _searchTerm = new TextEditingController();
   FetchData _fetchData;
@@ -33,7 +33,7 @@ class _ComicIssuesState extends State<ComicIssues> {
         color: Colors.white,
       );
       this.appBarTitle = new Text(
-        " Mavel ",
+        " Marvel ",
         style: new TextStyle(color: Colors.white),
       );
       _isSearching = false;
@@ -213,26 +213,31 @@ class CustomComicView extends StatelessWidget {
                     width: 4.0,
                   ),
                   Expanded(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        '${comicIssueData.title}',
-                        maxLines: 1,
-                        style: GoogleFonts.robotoCondensed(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.0),
-                      ),
-                      Text(
-                        comicIssueData.date[0]['date'].replaceRange(10, 24, ""),
-                        style: GoogleFonts.robotoCondensed(
-                            color: Colors.black87,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w400),
-                      ),
-                    ],
+                      child: Container(
+                    padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 12.0,),
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          '${comicIssueData.title}',
+                          maxLines: 1,
+                          style: GoogleFonts.robotoCondensed(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16.0),
+                        ),
+                        Text(
+                          comicIssueData.date[0]['date']
+                              .replaceRange(10, 24, ""),
+                          style: GoogleFonts.robotoCondensed(
+                              color: Colors.black87,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ],
+                    ),
                   )),
                 ],
               ),
@@ -240,9 +245,11 @@ class CustomComicView extends StatelessWidget {
             onTap: () {
               var route = new MaterialPageRoute(
                   builder: (BuildContext context) => new DetailFlow(
-                      image: '${comicIssueData.images[0]['path']}' +
-                          '.' +
-                          '${comicIssueData.images[0]['extension']}',
+                      image: comicIssueData.images.length == 0
+                          ? ''
+                          : '${comicIssueData.images[0]['path']}' +
+                              '.' +
+                              '${comicIssueData.images[0]['extension']}',
                       issueNumber: comicIssueData.ups,
                       title: comicIssueData.title,
                       description: comicIssueData.description,
@@ -251,7 +258,9 @@ class CustomComicView extends StatelessWidget {
                       //series: comicIssueData.s,
                       date: comicIssueData.date,
                       prices: comicIssueData.prices,
-                      images: comicIssueData.images,
+                      images: comicIssueData.images.length == 0
+                          ? ''
+                          : comicIssueData.images,
                       creators: comicIssueData.creators,
                       characters: comicIssueData.characters,
                       stories: comicIssueData.stories,

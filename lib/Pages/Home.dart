@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mavel/CustomDesign/arcBanner.dart';
 import 'package:mavel/CustomDesign/customButton.dart';
@@ -13,28 +14,22 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final heroImage = CachedNetworkImage(imageUrl:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ9HF1IuElC4crtO9B634WjKXVdvQfaKqEH8A&usqp=CAU",
+  final heroImage = CachedNetworkImage(
+    imageUrl:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ9HF1IuElC4crtO9B634WjKXVdvQfaKqEH8A&usqp=CAU",
     // "https://terrigen-cdn-dev.marvel.com/content/prod/1x/008cmv_ons_mas_dsk_02.jpg",
     fit: BoxFit.fill,
     height: 300.0,
   );
-  final secondImage = CachedNetworkImage(imageUrl:
-      "https://terrigen-cdn-dev.marvel.com/content/prod/1x/008cmv_ons_cut_dsk_03.jpg",
+  final secondImage = CachedNetworkImage(
+      imageUrl:
+          "https://terrigen-cdn-dev.marvel.com/content/prod/1x/008cmv_ons_cut_dsk_03.jpg",
       fit: BoxFit.fill);
-     
 
   @override
-  void initState(){
-super.initState();
+  void initState() {
+    super.initState();
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   precacheImage(heroImage.CachedNetworkImage, context);
-  //   precacheImage(secondImage.image, context);
-
-  //   super.didChangeDependencies();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +40,6 @@ super.initState();
         children: <Widget>[
           heroImage,
           firstSpace(),
-          //ArcBannerImage(70.0, preFirstSpace())
           Container(child: secondSpace(), color: Colors.white),
           Container(child: thirdSpace(), color: Colors.black),
         ],
@@ -57,17 +51,25 @@ super.initState();
     return Stack(
       children: <Widget>[
         ArcBannerImage(70.0, preFirstSpace()),
-        Positioned(bottom: 16.0,left: 16.0,right: 16.0,
+        Positioned(
+            bottom: 16.0,
+            left: 16.0,
+            right: 16.0,
             child: Row(
-          children: <Widget>[
-            Text('FOLLOW',
-                style: GoogleFonts.robotoCondensed(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.0,
-                    color: Colors.grey)),
-          ],
-        ))
+              children: <Widget>[
+                Expanded(
+                  child: Text('FOLLOW',
+                      style: GoogleFonts.robotoCondensed(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.0,
+                          color: Colors.grey)),
+                ),
+                Icon(FlutterIcons.facebook_ent, color: Colors.grey),
+                SizedBox(width: 16,),
+                Icon(FlutterIcons.twitter_ent, color: Colors.grey)
+              ],
+            ))
       ],
     );
   }

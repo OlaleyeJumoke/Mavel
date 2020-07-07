@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'ApiModel.dart';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart' as crypto;
-
+import 'package:mavel/Models/ApiModel.dart';
 import 'Keys.dart';
 
 class FetchData {
@@ -22,9 +21,13 @@ class FetchData {
     return hex.encode(digest.bytes);
   }
 
-  int itemsPerPage = 20;
+  int itemsPerPage = 100;
   var offset = 0;
   var page = 0;
+  var lastTotalReturnedItems = 0;
+  var firstCall = true;
+ 
+  
 
   Future<List<ComicIssue>> comicIssue(String path, String title) async {
     final hash = generateMd5('$ts' + '$privateKey' + '$publicKey').toString();
@@ -40,16 +43,21 @@ class FetchData {
       "title": 'captain marvel'
     };
 
+  
+
     final uri =
         Uri.http('gateway.marvel.com', '$path', queryParameters);
     final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
-
+firstCall = false;
     return await http.get(uri, headers: headers).then((http.Response res) {
       dynamic response = res.body;
       final int statusCode = res.statusCode;
 
       if (statusCode == 200) {
+
         var comics = json.decode(response);
+        
+      
         List comicsData = comics['data']['results'];
 
         return comicsData
