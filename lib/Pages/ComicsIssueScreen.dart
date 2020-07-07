@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mavel/Network/ApiLinks.dart';
 import 'package:mavel/Network/ApiModel.dart';
+import 'package:mavel/Pages/DetailFlow.dart';
 
 class ComicIssues extends StatefulWidget {
   @override
@@ -14,26 +15,27 @@ class _ComicIssuesState extends State<ComicIssues> {
   String _searchText = "";
 
   Icon searchAction = new Icon(Icons.search);
- Widget appBarTitle = new Text("Mavel");
+  Widget appBarTitle = new Text("Mavel");
 
- 
   final TextEditingController _searchTerm = new TextEditingController();
-    FetchData _fetchData;
+  FetchData _fetchData;
   @override
   void initState() {
     _fetchData = FetchData();
     _isSearching = false;
     super.initState();
   }
-  
-
-
 
   void _handleSearchEnd() {
     setState(() {
-      this.searchAction = new Icon(Icons.search, color: Colors.white,);
-      this.appBarTitle =
-      new Text(" Mavel ", style: new TextStyle(color: Colors.white),);
+      this.searchAction = new Icon(
+        Icons.search,
+        color: Colors.white,
+      );
+      this.appBarTitle = new Text(
+        " Mavel ",
+        style: new TextStyle(color: Colors.white),
+      );
       _isSearching = false;
       _searchTerm.clear();
     });
@@ -46,8 +48,7 @@ class _ComicIssuesState extends State<ComicIssues> {
           _isSearching = false;
           _searchText = "";
         });
-      }
-      else {
+      } else {
         setState(() {
           _isSearching = true;
           _searchText = _searchTerm.text;
@@ -56,65 +57,83 @@ class _ComicIssuesState extends State<ComicIssues> {
     });
   }
 
-
-
   void _handleSearchStart() {
     setState(() {
       _isSearching = true;
     });
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: new AppBar(
-          title: Text('Mavel'),
-          elevation: 4.0,
-          actions: <Widget>[new IconButton(icon: searchAction, onPressed: () {
-            setState(() {
-              if (this.searchAction.icon == Icons.search) {
-                this.searchAction =
-                new Icon(Icons.close, color: Colors.white, size: 24.0);
-                this.appBarTitle = new TextField(style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w300,), controller: _searchTerm,
-                  decoration: new InputDecoration(prefixIcon: new Icon(
-                      Icons.search, color: Colors.white, size: 24.0),
-                      hintText: "Search...",
-                      border: UnderlineInputBorder(borderSide: new BorderSide(
-                          color: Colors.white,
-                          width: 2.0,
-                          style: BorderStyle.solid), borderRadius:
-                      const BorderRadius.all(const Radius.circular(8.0)),),
-                      hintStyle: TextStyle(color: Colors.white,
-                          fontSize: 16.0)), /*onChanged: (_)*/);
-                _handleSearchStart();
-              }
-              else {
-                _handleSearchEnd();
-              }
-            });
-          })
-          ],
-
-    ),
-    body: comicList(),
+    return Scaffold(
+      appBar: new AppBar(
+        title: appBarTitle,
+        elevation: 4.0,
+        actions: <Widget>[
+          new IconButton(
+              icon: searchAction,
+              onPressed: () {
+                setState(() {
+                  if (this.searchAction.icon == Icons.search) {
+                    this.searchAction =
+                        new Icon(Icons.close, color: Colors.white, size: 24.0);
+                    this.appBarTitle = new TextField(
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w300,
+                      ),
+                      controller: _searchTerm,
+                      decoration: new InputDecoration(
+                          prefixIcon: new Icon(Icons.search,
+                              color: Colors.white, size: 24.0),
+                          hintText: "Search...",
+                          border: UnderlineInputBorder(
+                            borderSide: new BorderSide(
+                                color: Colors.white,
+                                width: 2.0,
+                                style: BorderStyle.solid),
+                            borderRadius: const BorderRadius.all(
+                                const Radius.circular(8.0)),
+                          ),
+                          hintStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0)), /*onChanged: (_)*/
+                    );
+                    _handleSearchStart();
+                  } else {
+                    _handleSearchEnd();
+                  }
+                });
+              })
+        ],
+      ),
+      body: comicList(),
     );
   }
+
   comicList() {
     var data = _fetchData.comicIssue();
     print(data);
     return FutureBuilder<List<ComicIssue>>(
         future: _fetchData.comicIssue(),
         builder: (context, AsyncSnapshot<dynamic> snapshot) {
-          print('SnapShot: ${snapshot.data}');
           if (snapshot.hasData &&
               snapshot.connectionState == ConnectionState.done) {
-            print('SnapShot1: ${snapshot.data}');
             List<ComicIssue> comicData = snapshot.data;
-            return new CustomComicView(comicData);
+            if (_searchText.isEmpty) {
+              return new CustomComicView(comicData);
+            } else {
+              List<ComicIssue> comicDatae = List();
+              for (ComicIssue data in comicData) {
+                if (data.date[0]['date']
+                    .toLowerCase()
+                    .contains(_searchText.toLowerCase())) {
+                  comicDatae.add(data);
+                }
+              }
+              return new CustomComicView(comicDatae);
+            }
           }
 
           return new Container(
@@ -157,7 +176,6 @@ class CustomComicView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  
                   comicIssueData.images.length == 0
                       ? new Container(
                           height: 60.0,
@@ -183,7 +201,9 @@ class CustomComicView extends StatelessWidget {
                       : new ClipRRect(
                           borderRadius: BorderRadius.circular(30.0),
                           child: CachedNetworkImage(
-                            imageUrl: '${comicIssueData.images[0]['path']}'+'.'+'${comicIssueData.images[0]['extension']}',
+                            imageUrl: '${comicIssueData.images[0]['path']}' +
+                                '.' +
+                                '${comicIssueData.images[0]['extension']}',
                             //"${comicIssueData.image}",
                             width: 60.0,
                             height: 60.0, fit: BoxFit.cover,
@@ -200,8 +220,7 @@ class CustomComicView extends StatelessWidget {
                       Text(
                         '${comicIssueData.title}',
                         maxLines: 1,
-                        style: GoogleFonts.robotoCondensed
-                        (
+                        style: GoogleFonts.robotoCondensed(
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
                             fontSize: 16.0),
@@ -218,28 +237,26 @@ class CustomComicView extends StatelessWidget {
                 ],
               ),
             ),
-            onTap: () {}
-            // var route = new MaterialPageRoute(
-            //     builder: (BuildContext context) =>
-            // new UserProfile(
-            //     isNetworkConnected: isNetworkConnected,
-            //     name: uCommentData.name,
-            //     uniqueId: uCommentData.uniqueId,
-            //     username: uCommentData.username,
-            //     email: uCommentData.email,
-            //     profilePicture: uCommentData.userProfilePix,
-            //     motto: uCommentData.motto,
-            //     category: uCommentData.category,
-            //     startTime: uCommentData.openingTime,
-            //     endTime: uCommentData.closingTime,
-            //     number: uCommentData.number,
-            //     address: uCommentData.address,
-            // ),
-            //     );
-            //     Navigator.of(context).push(route);
-            // }),
-            ));
+            onTap: () {
+              var route = new MaterialPageRoute(
+                  builder: (BuildContext context) => new DetailFlow(
+                      image: '${comicIssueData.images[0]['path']}' +
+                          '.' +
+                          '${comicIssueData.images[0]['extension']}',
+                      issueNumber: comicIssueData.ups,
+                      title: comicIssueData.title,
+                      description: comicIssueData.description,
+                      ups: comicIssueData.ups,
+                      format: comicIssueData.format,
+                      //series: comicIssueData.s,
+                      date: comicIssueData.date,
+                      prices: comicIssueData.prices,
+                      images: comicIssueData.images,
+                      creators: comicIssueData.creators,
+                      characters: comicIssueData.characters,
+                      stories: comicIssueData.stories,
+                      events: comicIssueData.events));
+              Navigator.of(context).push(route);
+            }));
   }
-
-
 }
