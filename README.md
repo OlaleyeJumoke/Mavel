@@ -7,6 +7,10 @@ How to run the app:
 4. Edit the Key.dart file, by adding your Public and Private Key.
 5. Run the app with your favourite IDE.
 
+App Apk can be found in the APK folder in the lib folder of the project
+
+
+
 
 A new Flutter project.
 
